@@ -1,10 +1,12 @@
 import random
-import msvcrt
+# import msvcrt
+from getch import getch
 
 def get_char():
     """Get a single character from the user."""
-    return msvcrt.getch()
-    
+    # return msvcrt.getch()
+    return getch()
+
 class game:
     def __init__(self):
         print("enter init")
@@ -22,7 +24,7 @@ class game:
     def display(self):
         for i in range(len(self.array)):
             print(self.array[i])
-        return 
+        return
     def reset_x(self):
         self.array[self.y][self.x]=" "
     def command_loop(self):
@@ -63,14 +65,14 @@ class game:
                     self.x +=1
             else:
                 print("invalid command")
-                continue 
+                continue
             if self.array[self.y][self.x]=="W":
                 print("A wolf ate you!")
                 break
             self.array[self.y][self.x]="X"
             self.display()
         return
-        
+
     def set_wolves(self):
         random.seed(42)
         for i in range(self.n_wolves):
