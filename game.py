@@ -1,5 +1,6 @@
 import random
 # import msvcrt
+import tkinter as tk
 from getch import getch
 
 def get_char():
@@ -21,18 +22,39 @@ class game:
         self.y=0
         self.array[self.y][self.x]="x"
         self.n_wolves=10
+
+        self.root = tk.Tk()
+
+
     def display(self):
         for i in range(len(self.array)):
             print(self.array[i])
+
+    def display22(self):
+        # Set the dpi
+        self.root.option_add('*dpi', '144')
+        # Create labels to display the array elements
+        for i in range(self.n):
+            for j in range(self.n):
+                text=self.array[i][j]
+                fg='white'
+                if text == "W":
+                    fg = "red"
+                label = tk.Label(self.root, text=text, padx=20, pady=20,bg='#424242', fg=fg,font=('Times New Roman', 16))
+                label.grid(row=i, column=j)
+
+        self.root.update()
         return
+
     def reset_x(self):
         self.array[self.y][self.x]=" "
+
     def command_loop(self):
         while True:
             print("Enter a direction: W,A,S,D, or z ")
             # command=input("Enter a direction: W,A,S,D, or stop ").lower()
             command=get_char().lower()
-            print(command)
+            print("you entered",command)
             if command==b'z':
                 break
             if command==b'w':
@@ -70,7 +92,7 @@ class game:
                 print("A wolf ate you!")
                 break
             self.array[self.y][self.x]="X"
-            self.display()
+            self.displaya()
         return
 
     def set_wolves(self):
@@ -81,6 +103,8 @@ class game:
             if w_x==self.x and w_y==self.y:
                 continue
             self.array[w_y][w_x]="W"
+
+# tk.font.families()
 g1=game()
 g1.set_wolves()
 g1.display()
