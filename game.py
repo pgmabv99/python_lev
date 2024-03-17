@@ -108,13 +108,14 @@ class game:
     def path_found(self,x,y):
         self.points_covered.append([x,y])
         for command in self.steps:
+            found=False
             dx=self.steps[command][0]
             dy=self.steps[command][1]
             if [x+dx,y+dy]==[self.end_x,self.end_y] : 
                 print("points",self.points_covered)
                 self.display()
-                self.points_covered.pop()
-                return True
+                found=True
+                break
             elif (x+dx not in range(0,self.n)) or (y+dy not in range(0,self.n)):
                 continue
             elif [x+dx,y+dy] in self.wolves:
@@ -123,10 +124,9 @@ class game:
                 continue
             found=self.path_found(x+dx,y+dy)
             if found:
-                self.points_covered.pop()
-                return True
+                break
         self.points_covered.pop()
-        return False 
+        return found 
 
   
 
