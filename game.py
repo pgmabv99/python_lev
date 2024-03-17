@@ -1,6 +1,7 @@
 import random
 # import msvcrt
 from getch import getch
+import time
 
 def get_char():
     """Get a single character from the user."""
@@ -107,6 +108,8 @@ class game:
 
     def path_found(self,x,y):
         self.points_covered.append([x,y])
+        self.display()
+        time.sleep(.5)
         for command in self.steps:
             found=False
             dx=self.steps[command][0]
@@ -126,6 +129,8 @@ class game:
             if found:
                 break
         self.points_covered.pop()
+        self.display()
+        time.sleep(.5)
         return found 
 
   
