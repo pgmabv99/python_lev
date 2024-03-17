@@ -10,10 +10,10 @@ class game:
     def __init__(self):
         print("enter init")
         self.array=[]
-        self.n=5
+        self.n=10
         self.x=1
         self.y=1
-        self.n_wolves=20
+        self.n_wolves=50
         random.seed(42)
         self.steps={
         "a":[-1,0],
@@ -21,8 +21,8 @@ class game:
         "w":[0,-1],
         "s":[0,1]
         }
-        self.end_x=3
-        self.end_y=3
+        self.end_x=8
+        self.end_y=8
         
 
 
@@ -36,6 +36,8 @@ class game:
                     label="x"
                 elif [x_i,y_i]==[self.end_x,self.end_y]:
                     label="E"
+                elif [x_i,y_i] in self.points_covered:
+                    label="o"
                 else:
                     label=" "
                 print(label,end=" ")
@@ -91,13 +93,17 @@ class game:
         for i in range(self.n_wolves):
             w_x=random.randint(0,self.n-1)
             w_y=random.randint(0,self.n-1)
-            if w_x==self.x and w_y==self.y:
+            if [w_x,w_y] in [[self.x,self.y],[self.end_x,self.end_y]]:
                 continue
+
             self.wolves.append([w_y,w_x])
         self.points_covered=[[self.x,self.y]]
         if not self.path_found(self.x,self.y):
             print("Bad wolves")
-        print(self.wolves)
+        else:
+            print("Good wolves")
+        # print("WOLVES",len(self.wolves),self.wolves)
+        print("----------------------")
 
     def path_found(self,x,y):
         self.points_covered.append([x,y])
@@ -105,6 +111,8 @@ class game:
             dx=self.steps[command][0]
             dy=self.steps[command][1]
             if [x+dx,y+dy]==[self.end_x,self.end_y] : 
+                print("points",self.points_covered)
+                self.display()
                 self.points_covered.pop()
                 return True
             elif (x+dx not in range(0,self.n)) or (y+dy not in range(0,self.n)):
