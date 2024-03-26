@@ -1,1 +1,1 @@
-# python_lev
+Code for school project

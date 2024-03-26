@@ -11,24 +11,37 @@ class game:
     def __init__(self):
         print("enter init")
         self.array=[]
-        self.n=10
-        self.x=1
-        self.y=1
-        self.n_wolves=50
+        self.n=4
+
+        self.n_wolves=5
+
+        self.i_game=0
+        self.max_game=5
+        self.begin_x=1
+        self.begin_y=1
+        self.end_x=self.n-1
+        self.end_y=self.n-1
+        self.x=self.begin_x
+        self.y=self.begin_y
+        self.n_iter=0
         random.seed(42)
-        self.steps={
-        "a":[-1,0],
-        "d":[1,0], 
+        self.steps={  
+        
+        "d":[1,0],
+        "a":[-1,0], 
+        "s":[0,1],
+      
+        
         "w":[0,-1],
-        "s":[0,1]
+        
         }
-        self.end_x=8
-        self.end_y=8
+        
         
 
 
 
-    def display(self):
+    def display(self,tail=True):
+        print("=============")
         for y_i in range(self.n):
             for x_i in range(self.n):
                 if [x_i,y_i] in self.wolves:
@@ -37,8 +50,10 @@ class game:
                     label="x"
                 elif [x_i,y_i]==[self.end_x,self.end_y]:
                     label="E"
-                elif [x_i,y_i] in self.points_covered:
-                    label="o"
+                # elif  not tail and [x_i,y_i] in self.points_covered:
+                #     label="o"
+                # elif tail and [x_i,y_i]==self.points_covered[-1]:
+                #     label="o"
                 else:
                     label=" "
                 print(label,end=" ")
@@ -66,8 +81,8 @@ class game:
             dx=self.steps[command][0]
             dy=self.steps[command][1]
 
-            print("dx",dx)
-            print("dy",dy)
+            # print("dx",dx)
+            # print("dy",dy)
 
             # check the step
             if (self.x+dx not in range(0,self.n)) or (self.y+dy not in range(0,self.n)):
@@ -83,21 +98,35 @@ class game:
                 self.display()
                 break
             elif [self.x,self.y]==[self.end_x,self.end_y]:
-                print("You Won!")
+                print("You have moved on!")
+                if self.i_game==self.max_game:
+                    print("You won!")
+                    break
+                time.sleep(2)
+                self.new_game()
+            else:
+                # regular step
                 self.display()
-                break
-            self.display()
         return
 
-    def set_wolves(self):
+    def set_wolves(self, wall=False):
         self.wolves=[]
-        for i in range(self.n_wolves):
-            w_x=random.randint(0,self.n-1)
-            w_y=random.randint(0,self.n-1)
-            if [w_x,w_y] in [[self.x,self.y],[self.end_x,self.end_y]]:
-                continue
 
-            self.wolves.append([w_y,w_x])
+        if wall:
+            # build a wall!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            for i in range(self.n):
+                w_x=i
+                w_y=self.n-2
+                self.wolves.append([w_y,w_x])
+        else:
+            # random 
+            for i in range(self.n_wolves):
+                w_x=random.randint(0,self.n-1)
+                w_y=random.randint(0,self.n-1)
+                if [w_x,w_y] in [[self.x,self.y],[self.end_x,self.end_y]]:
+                    continue
+                self.wolves.append([w_y,w_x])
+
         self.points_covered=[[self.x,self.y]]
         if not self.path_found(self.x,self.y):
             print("Bad wolves")
@@ -107,9 +136,19 @@ class game:
         print("----------------------")
 
     def path_found(self,x,y):
+        self.n_iter +=1
+        if self.n_iter%100000==0:
+            print(self.n_iter)
+
+        nsec=0.01
+        # self.f1.write(str(self.points_covered))
         self.points_covered.append([x,y])
-        self.display()
-        time.sleep(.5)
+        # self.display()
+        # time.sleep(nsec)
+
+        # if x==self.begin_x-1 and y==self.begin_y and len(self.points_covered)==3:
+        #     print("first level branch")
+        #     time.sleep(3)
         for command in self.steps:
             found=False
             dx=self.steps[command][0]
@@ -117,6 +156,7 @@ class game:
             if [x+dx,y+dy]==[self.end_x,self.end_y] : 
                 print("points",self.points_covered)
                 self.display()
+                time.sleep(2)
                 found=True
                 break
             elif (x+dx not in range(0,self.n)) or (y+dy not in range(0,self.n)):
@@ -129,10 +169,20 @@ class game:
             if found:
                 break
         self.points_covered.pop()
-        self.display()
-        time.sleep(.5)
+        # self.display()
+        # time.sleep(nsec)
         return found 
-
+    
+    def new_game(self):
+        self.n +=1
+        self.n_wolves +=8
+        self.x=self.begin_x
+        self.y=self.begin_y
+        self.end_x=self.n-1
+        self.end_y=self.n-1
+        self.i_game +=1
+        self.set_wolves()
+        self.display()
   
 
 
